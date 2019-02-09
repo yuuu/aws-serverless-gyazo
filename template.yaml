@@ -7,24 +7,42 @@ Description: >
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
+    Api:
+        BinaryMediaTypes:
+            - image~1png
     Function:
         Timeout: 3
 
 
 Resources:
+    Bucket:
+        Type: AWS::S3::Bucket
 
-    HelloWorldFunction:
-        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    GyazoUploadFunction:
+        Type: AWS::Serverless::Function
         Properties:
-            CodeUri: hello_world/
-            Handler: app.lambda_handler
+            CodeUri: app/
+            Handler: app.gyazo_upload
             Runtime: ruby2.5
+            Policies:
+                - AWSLambdaExecute # Managed Policy
+                -
+                    Version: '2012-10-17' # Policy Document
+                    Statement:
+                        -
+                            Effect: Allow
+                            Action:
+                                - s3:PutObject
+                            Resource: !GetAtt Bucket.Arn
+            Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+                Variables:
+                    BUCKET_NAME: !Ref Bucket
             Events:
-                HelloWorld:
+                GyazoUpload:
                     Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
                     Properties:
-                        Path: /hello
-                        Method: get
+                        Path: /upload
+                        Method: post
 
 Outputs:
 
@@ -37,8 +55,8 @@ Outputs:
 
     HelloWorldFunction:
       Description: "Hello World Lambda Function ARN"
-      Value: !GetAtt HelloWorldFunction.Arn
+      Value: !GetAtt GyazoUploadFunction.Arn
 
     HelloWorldFunctionIamRole:
       Description: "Implicit IAM Role created for Hello World function"
-      Value: !GetAtt HelloWorldFunctionRole.Arn
+      Value: !GetAtt GyazoUploadFunctionRole.Arn
