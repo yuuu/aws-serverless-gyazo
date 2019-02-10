@@ -17,6 +17,33 @@ Globals:
 Resources:
     Bucket:
         Type: AWS::S3::Bucket
+        Properties:
+            AccessControl: PublicRead
+            WebsiteConfiguration:
+                IndexDocument: index.html
+                ErrorDocument: error.html
+        DeletionPolicy: Retain
+
+    BucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+            Bucket: 
+                Ref: Bucket
+            PolicyDocument: 
+                Statement: 
+                    - 
+                        Action: 
+                            - "s3:GetObject"
+                        Effect: "Allow"
+                        Resource: 
+                            Fn::Join: 
+                                - ""
+                                - 
+                                    - "arn:aws:s3:::"
+                                    - 
+                                        Ref: Bucket
+                                    - "/*"
+                        Principal: "*"
 
     GyazoUploadFunction:
         Type: AWS::Serverless::Function
@@ -36,6 +63,7 @@ Resources:
                             Resource: !GetAtt Bucket.Arn
             Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
                 Variables:
+                    REGION: !Ref "AWS::Region"
                     BUCKET_NAME: !Ref Bucket
             Events:
                 GyazoUpload:
