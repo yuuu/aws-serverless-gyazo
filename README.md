@@ -1,12 +1,12 @@
-# sam-app
+# aws-serverless-gyazo
 
-This is a sample template for sam-app - Below is a brief explanation of what we have generated for you:
+This is a sample template for aws-serverless-gyazo - Below is a brief explanation of what we have generated for you:
 
 ```bash
 .
 ├── README.md                   <-- This instructions file
 ├── event.json                  <-- API Gateway Proxy Integration event payload
-├── hello_world                 <-- Source code for a lambda function
+├── app                         <-- Source code for a lambda function
 │   ├── app.rb                  <-- Lambda function code
 │   ├── Gemfile                 <-- Ruby function dependencies
 ├── template.yaml               <-- SAM template
@@ -29,7 +29,7 @@ This is a sample template for sam-app - Below is a brief explanation of what we 
 **Invoking function locally using a local sample payload**
 
 ```bash
-sam local invoke HelloWorldFunction --event event.json
+sam local invoke GyazoUploadFunction --event event.json
 ```
 
 **Invoking function locally through local API Gateway**
@@ -38,7 +38,7 @@ sam local invoke HelloWorldFunction --event event.json
 sam local start-api
 ```
 
-If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/hello`
+If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/upload`
 
 **SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
 
@@ -178,7 +178,7 @@ All commands used throughout this document
 sam local generate-event apigateway aws-proxy > event.json
 
 # Invoke function locally with event.json as an input
-sam local invoke HelloWorldFunction --event event.json
+sam local invoke GyazoUploadFunction --event event.json
 
 # Run API Gateway locally
 sam local start-api
@@ -204,6 +204,6 @@ aws cloudformation describe-stacks \
     --output table
 
 # Tail Lambda function Logs using Logical name defined in SAM Template
-sam logs -n HelloWorldFunction --stack-name sam-app --tail
+sam logs -n GyazoUploadFunction --stack-name sam-app --tail
 ```
 
